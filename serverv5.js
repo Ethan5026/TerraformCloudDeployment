@@ -14,15 +14,15 @@ app.use(express.json()); // Add this to parse JSON bodies
 
 // Google Cloud Storage configuration
 const storage = new Storage();
-const bucketName = '422proj4-bucket'; // Replace with your Google Cloud Storage bucket name
+  const bucketName = 'final-459618-bucket'; // Replace with your Google Cloud Storage bucket name
 const bucket = storage.bucket(bucketName);
 
 // Create a connection pool to the database
 const pool = mysql.createPool({
-  user: 'root',
-  password: '422',
-  database: 'project4',
-  socketPath: `/cloudsql/proj4-456020:us-central1:quickstart-instance`,
+  user: 'nodeuser',
+  password: 'nodepassword',
+  database: 'nodedb',
+  socketPath: `/cloudsql/final-459618:us-central1:gallery-sql`,
 });
 
 // Setup Multer for memory storage (no filesystem storage)

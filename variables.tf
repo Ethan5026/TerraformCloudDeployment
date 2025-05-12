@@ -1,4 +1,6 @@
-variable "project_id" {}
+variable "project_id" {
+  default = "final-459618"
+}
 variable "region" {
   default = "us-central1"
 }
@@ -8,7 +10,10 @@ variable "zone" {
 variable "db_user" {
   default = "nodeuser"
 }
-variable "db_password" {}
+variable "db_password" {
+  default = "nodepassword"
+  sensitive = true
+}
 variable "db_name" {
   default = "nodedb"
 }
