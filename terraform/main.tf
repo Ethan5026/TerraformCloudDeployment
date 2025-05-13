@@ -52,7 +52,7 @@ resource "google_storage_bucket" "app_bucket" {
 
 }
 
-#Create an SQL user
+#Create an SQL instance
 resource "google_sql_database_instance" "main" {
   name = "gallery-sql"
   database_version = "MYSQL_8_0"
@@ -81,34 +81,9 @@ resource "google_sql_user" "gallery_user" {
   instance = google_sql_database_instance.main.name
   password_wo = var.db_password
 }
-
-#Create a Compute Engine VM
-resource "google_compute_instance" "gallery_vm" {
-  name         = "gallery-vm"
-  machine_type = "e2-standard-2"
-  zone         = var.zone
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-
-  network_interface {
-    network    = google_compute_network.vpc_network.id
-    subnetwork = google_compute_subnetwork.subnet.id
-    access_config {} # Required for external IP
-  }
-
-  tags = ["http-server"]
-
-  service_account {
-    email  = google_service_account.app_sa.email
-    scopes = ["cloud-platform"]
-  }
-
-  metadata_startup_script = file("startup.sh")
-
+resource "google_app_engine_application" "app" {
+  project     = var.project_id
+  location_id = "us-central"  # must be set once per project
 }
 
 
@@ -116,6 +91,13 @@ resource "google_compute_instance" "gallery_vm" {
 resource "google_service_account" "app_sa" {
   account_id   = "node-app-sa"
   display_name = "Node.js App Service Account"
+}
+
+#Allow Storage Access
+resource "google_project_iam_member" "gae_storage_access" {
+  project = var.project_id
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${var.project_id}@appspot.gserviceaccount.com"
 }
 
 #SQL permissions
@@ -138,7 +120,6 @@ resource "google_storage_bucket_iam_member" "sa_storage_uploader" {
   role   = "roles/storage.objectCreator"
   member = "serviceAccount:${google_service_account.app_sa.email}"
 }
-
 
 
 

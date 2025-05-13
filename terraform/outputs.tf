@@ -70,12 +70,12 @@ output "sql_user_password" {
 
 output "compute_instance_name" {
   description = "The name of the Compute Engine VM"
-  value       = google_compute_instance.gallery_vm.name
+  value       = google_app_engine_application.app.name
 }
 
-output "node_app_url_port_80" {
-  description = "Public URL to access the Node.js app on port 80"
-  value = try(google_compute_instance.gallery_vm.network_interface[0].access_config[0].nat_ip, "VM does not have an external IP")
+output "app_engine_url" {
+  description = "Public URL of the App Engine application"
+  value       = "https://${var.project_id}.appspot.com"
 }
 
 output "service_account_email" {

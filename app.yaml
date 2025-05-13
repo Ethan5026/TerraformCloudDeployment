@@ -1,0 +1,8 @@
+runtime: nodejs20
+
+entrypoint: node serverv5.js
+
+handlers:
+  - url: /api/.*
+    script: auto
+    secure: always
